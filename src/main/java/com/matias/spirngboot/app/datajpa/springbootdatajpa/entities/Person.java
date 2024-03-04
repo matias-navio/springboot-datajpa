@@ -16,15 +16,15 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String lasrName;
+    private String lastName;
     // por convencion en las bases de datos se separa con guion bajo
     @Column(name = "programming_language")
     private String programmingLanguage;
     
-    public Person(Long id, String name, String lasrName, String programmingLanguage) {
+    public Person(Long id, String name, String lastName, String programmingLanguage) {
         this.id = id;
         this.name = name;
-        this.lasrName = lasrName;
+        this.lastName = lastName;
         this.programmingLanguage = programmingLanguage;
     }
 
@@ -42,11 +42,11 @@ public class Person {
     public void setName(String name) {
         this.name = name;
     }
-    public String getLasrName() {
-        return lasrName;
+    public String getLastName() {
+        return lastName;
     }
-    public void setLasrName(String lasrName) {
-        this.lasrName = lasrName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
     public String getProgrammingLanguage() {
         return programmingLanguage;
@@ -57,7 +57,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return "id=" + id + ", name=" + name + ", lasrName=" + lasrName + ", programmingLanguage="
+        return "id=" + id + ", name=" + name + ", lastName=" + lastName + ", programmingLanguage="
                 + programmingLanguage + "]";
     }
 

@@ -24,6 +24,6 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 
 		List<Person> persons = (List<Person>) repository.findAll();
-		persons.stream().forEach(person -> System.out.println(person.getName()));
+		persons.stream().forEach(person -> System.out.println(person));
 	}
 }
