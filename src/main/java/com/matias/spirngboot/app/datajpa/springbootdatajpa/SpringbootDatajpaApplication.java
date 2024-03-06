@@ -28,14 +28,40 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 
 		// list();
 		// findOde();
-		create();
+		// create();
+		update();
+	}
+
+	@Transactional
+	public void update(){
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Ingrese id: ");
+		Long id = scanner.nextLong();
+		Optional<Person> optionalPerson = repository.findOne(id);
+
+		optionalPerson.ifPresent(p -> {
+			// mostramos person
+			System.out.println(p);
+			// lenguaje nuevo
+			System.out.println("Nuevo lenguaje: ");
+			String newLanguage = scanner.next();
+			// se lo asignamos
+			p.setProgrammingLanguage(newLanguage);
+			// lo guardamos
+			Person personDB = repository.save(p);
+			System.out.println(personDB);
+		});
 	}
 
 	@Transactional
 	public void create(){
 		Scanner scanner = new Scanner(System.in);
+		System.out.println("Nombre: ");
 		String name = scanner.next();
+		System.out.println("Apellido: ");
 		String lastName = scanner.next();
+		System.out.println("Lneguaje de programacion: ");
 		String programmingLanguage = scanner.next();
 
 		Person person = new Person(null, name, lastName, programmingLanguage);
