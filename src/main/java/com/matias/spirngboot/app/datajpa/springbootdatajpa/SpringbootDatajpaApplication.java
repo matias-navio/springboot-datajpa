@@ -11,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.matias.spirngboot.app.datajpa.springbootdatajpa.dto.PersonDto;
 import com.matias.spirngboot.app.datajpa.springbootdatajpa.entities.Person;
 import com.matias.spirngboot.app.datajpa.springbootdatajpa.repositories.PersonRepository;
 
@@ -33,7 +34,58 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 		// update();
 		// delete();
 		// delete2();
-		personaliceQueries();
+		// personaliceQueries();
+		// personaliceQueries2();
+		// pesonalizedQueriesDistinct();
+		pesonalizedQueriesConcatUpperAndLowerCase();
+	}
+
+	@Transactional(readOnly = true)
+	public void pesonalizedQueriesConcatUpperAndLowerCase(){
+		System.out.println("====== Consulta usando concat, devolviendo el nombre completo ======");
+		List<String> names = repository.findFullNameConcat();
+		names.forEach(System.out::println);
+
+		System.out.println("====== Consulta para convertir Strings a mayuscula ======");
+		names = repository.findFullNameConcatUpper();
+		names.forEach(System.out::println);
+
+		System.out.println("====== Consulta para convertir Strings a minusculas ======");
+		names = repository.findFullNameConcatLower();
+		names.forEach(System.out::println);
+
+		System.out.println("====== Consulta para mezclar mayúsculas y minúsculas ======");
+		List<Object[]> dataPersonMix = repository.findPersonDataConcatMix();
+		dataPersonMix.forEach(p -> System.out.println("Id: " + p[0] +
+													" Nombre: " + p[1] +
+													" Apellido: " + p[2] +
+													" Lenguaje: " + p[3]));
+	}
+
+	@Transactional(readOnly = true)
+	public void pesonalizedQueriesDistinct(){
+		System.out.println("======= Consultando los nombres de las personas =======");
+		List<String> nameList = repository.findAllNames();
+		nameList.forEach(names -> System.out.println(names));
+
+		System.out.println("======= Consultando los nombres de las personas con distinct =======");
+		List<String> nameListDistinct = repository.findAllNamesDistinct();
+		nameListDistinct.forEach(System.out::println);
+
+		System.out.println("======= Consultando los lenguajes de programacion de las personas con distinct =======");
+		List<String> languages = repository.findAllLanguagesDisctinct();
+		languages.forEach(System.out::println);
+
+		System.out.println("======= Consultando los lenguajes de programacion de las personas con distinct count =======");
+		Long lenguagesNum = repository.findAllLanguagesDisctinctCount();
+		System.out.println(lenguagesNum);
+	}
+
+	@Transactional(readOnly = true)
+	public void personaliceQueries2(){
+		System.out.println("==== Consulta que puebla y devuelve un objeto Dto ====");
+		List<PersonDto> personsDto = repository.findAllPersonDto();
+		personsDto.forEach(p -> System.out.println(p.toString()));
 	}
 
 	@Transactional(readOnly = true)
@@ -139,11 +191,11 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 		System.out.println("Nombre: ");
 		String name = scanner.next();
 		System.out.println("Apellido: ");
-		String lastName = scanner.next();
+		String lastname = scanner.next();
 		System.out.println("Lneguaje de programacion: ");
 		String programmingLanguage = scanner.next();
 
-		Person person = new Person(null, name, lastName, programmingLanguage);
+		Person person = new Person(null, name, lastname, programmingLanguage);
 
 		Person newPerson = repository.save(person);
 		System.out.println(newPerson);
@@ -157,7 +209,7 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 		Person person = null;
 		Optional<Person> optionalPerson = repository.findOne(1L);
 		// esto es en caso de que la persona no exista, con esto lanza una excepcion
-		String namePersona = optionalPerson.get().getLastName();
+		String namePersona = optionalPerson.get().getLastname();
 		// validamos si esta presente y la mostramos
 		if(optionalPerson.isPresent()){
 			person = optionalPerson.get();
