@@ -1,5 +1,6 @@
 package com.matias.spirngboot.app.datajpa.springbootdatajpa;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -29,7 +30,84 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 		// list();
 		// findOde();
 		// create();
-		update();
+		// update();
+		// delete();
+		// delete2();
+		personaliceQueries();
+	}
+
+	@Transactional(readOnly = true)
+	public void personaliceQueries(){
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Ingrese el id del usuario: ");
+		Long id = scanner.nextLong();
+
+		System.out.println("========== Devolvemos el nombre ==========");
+		String name = repository.getNameById(id);
+		System.out.println("El usuario con ID " + id + " es " + name);
+
+		System.out.println("========== Devolvemos el nombre y lenguaje ==========");
+		String lenguaje = repository.getProgrammingLanguageById(id);
+		System.out.println("El lenguaje favorito de " + name + " es " + lenguaje);
+
+		System.out.println("========== Devolvemos el nombre completo ==========");
+		String fullName = repository.getFullNameById(id);
+		System.out.println("Nombre completo del ID " + id + ": " + fullName);
+
+		System.out.println("========== Devolvemos toda la data de un usuario por el id ==========");
+		Optional<Object> personOp = repository.getDataPersonById(id);
+		if(personOp.isPresent()){
+			Object[] personReg = (Object[])personOp.get();
+			System.out.println("Id: " + personReg[0] + " Nombre: " + personReg[1] + " Apellido: " + personReg[2] + " Lenguaje: " + personReg[3]);
+		}
+		
+		System.out.println("========== Devolvemos todos los datos con un iterator ==========");
+		Iterator<Object[]> personDataList = repository.getDataPersonList().iterator();
+		while (personDataList.hasNext()) {
+			personDataList.forEachRemaining(p -> 
+							System.out.println("Id: " + p[0] + 
+											" Nombre: " + p[1] + 
+											" Apellido: " + p[2] + 
+											" Lenguaje: " + p[3]));
+		}
+	}
+
+	@Transactional
+	public void delete2(){
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Listado de personas: ");
+		repository.findAll().forEach(System.out::println);
+
+		System.out.println("Ingrese el id para eliminar: ");
+		Long id = scanner.nextLong();
+
+		Optional<Person> optionalPerson = repository.findById(id);
+		optionalPerson.ifPresentOrElse(p -> repository.delete(p), () -> System.out.println("La persona no existe en la base de datos!"));
+
+		System.out.println("Listado nuevo de personas: ");
+		repository.findAll().forEach(System.out::println);
+	}
+
+	@Transactional
+	public void delete(){
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Listado de personas: ");
+		repository.findAll().forEach(System.out::println);
+
+		System.out.println("Ingrese id para eliminar: ");
+		Long id = scanner.nextLong();
+		Optional<Person> optionalPerson = repository.findOne(id);
+
+		if(optionalPerson.isPresent()){
+			repository.deleteById(id);
+			System.out.println("Eliminado con exito!");
+			repository.findAll().forEach(System.out::println);
+		}else{
+			System.out.println("Persona no encontrada en la base de datos!");
+		}
 	}
 
 	@Transactional
@@ -40,23 +118,24 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 		Long id = scanner.nextLong();
 		Optional<Person> optionalPerson = repository.findOne(id);
 
-		optionalPerson.ifPresent(p -> {
+		optionalPerson.ifPresent(pDb -> {
 			// mostramos person
-			System.out.println(p);
+			System.out.println(pDb);
 			// lenguaje nuevo
 			System.out.println("Nuevo lenguaje: ");
 			String newLanguage = scanner.next();
 			// se lo asignamos
-			p.setProgrammingLanguage(newLanguage);
+			pDb.setProgrammingLanguage(newLanguage);
 			// lo guardamos
-			Person personDB = repository.save(p);
-			System.out.println(personDB);
+			Person personUpdate = repository.save(pDb);
+			System.out.println(personUpdate);
 		});
 	}
 
 	@Transactional
 	public void create(){
 		Scanner scanner = new Scanner(System.in);
+
 		System.out.println("Nombre: ");
 		String name = scanner.next();
 		System.out.println("Apellido: ");
@@ -86,7 +165,7 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 		System.out.println(person);
 
 		// esta linea sola hace lo mismo que todo lo de arriba
-		repository.findOne(2L).ifPresent(persons -> System.out.println(persons));
+		repository.findOne(2L).ifPresent(System.out::println);
 		// Busqueda de uno por nombre
 		repository.findOneName("Giuliano").ifPresent(persons -> System.out.println(persons));
 		// buscamos un usuario por una coinsidencia en el nombre, es decir, devuelve en base a si encuentra algo parecido para adelante y atras

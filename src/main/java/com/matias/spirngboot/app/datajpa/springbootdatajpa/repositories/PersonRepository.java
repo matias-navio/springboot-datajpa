@@ -35,4 +35,20 @@ public interface PersonRepository extends CrudRepository<Person, Long>{
     // este es igual al de arriba, pero este ya está integrado
     Optional<Person> findByNameContaining(String name);
 
+    // consulta personalizada para solo obtener el nombre mediante un id
+    @Query("select p.name from Person p where p.id = ?1")
+    String getNameById(Long id);
+
+    @Query("select p.programmingLanguage from Person p where p.id = ?1")
+    String getProgrammingLanguageById(Long id);
+
+    @Query("select concat(p.name, ' ', p.lastName) from Person p where p.id = ?1")
+    String getFullNameById(Long id);
+
+    @Query("select p.id, p.name, p.lastName, p.programmingLanguage from Person p")
+    List<Object[]> getDataPersonList();
+
+    @Query("select p.id, p.name, p.lastName, p.programmingLanguage from Person p where p.id = ?1")
+    Optional<Object> getDataPersonById(Long id);
+
 }
