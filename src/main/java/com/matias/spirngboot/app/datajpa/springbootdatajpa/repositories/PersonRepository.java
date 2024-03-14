@@ -70,7 +70,7 @@ public interface PersonRepository extends CrudRepository<Person, Long>{
     @Query("select concat(p.name, ' ', p.lastname) from Person p")
     List<String> findFullNameConcat();
 
-    @Query("select upper(concat(p.name || ' ' || p.lastname)) from Person p")
+    @Query("select upper(concat(p.name, ' ' , p.lastname)) from Person p")
     List<String> findFullNameConcatUpper();
 
     @Query("select lower(concat(p.name, ' ', p.lastname)) from Person p")
@@ -79,4 +79,9 @@ public interface PersonRepository extends CrudRepository<Person, Long>{
     @Query("select p.id, upper(p.name), lower(p.lastname), upper(p.programmingLanguage) from Person p")
     List<Object[]> findPersonDataConcatMix();
 
+    List<Person> findByNameLike(String name);
+
+    List<Person> findByIdBetween(Long id1, Long id2);
+
+    List<Person> findByNameBetween(String name1, String name2);
 }

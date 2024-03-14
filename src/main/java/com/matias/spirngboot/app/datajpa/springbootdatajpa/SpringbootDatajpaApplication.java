@@ -37,7 +37,38 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 		// personaliceQueries();
 		// personaliceQueries2();
 		// pesonalizedQueriesDistinct();
-		pesonalizedQueriesConcatUpperAndLowerCase();
+		// pesonalizedQueriesConcatUpperAndLowerCase();
+		personalizedQueriesBetween();
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedQueriesBetween(){
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Ingrese un ID para el rango: ");
+		Long id1 = scanner.nextLong();
+		System.out.println("Ingrese el segundo ID para el rango: ");
+		Long id2 = scanner.nextLong();
+
+		System.out.println("========= Consulta con rangos between =========");
+		List<Person> persons = repository.findByIdBetween(id1, id2);
+		persons.forEach(System.out::println);
+
+		System.out.println("Una letra con la que inicien los nombres: ");
+		String c1 = scanner.next();
+	
+		System.out.println("========= Consulta con nombre por sos letras con like =========");
+		persons = repository.findByNameLike(c1.concat("%"));
+		persons.forEach(System.out::println);
+
+		System.out.println("Ingrese una latra para el rango: ");
+		String char1 = scanner.next().toUpperCase();
+		System.out.println("Ingrese la segunda latra para el rango: ");
+		String char2 = scanner.next().toUpperCase();
+
+		System.out.println("========= Consulta con nombre por sos letras con between entre J y N =========");
+		persons = repository.findByNameBetween(char1, char2);
+		persons.forEach(System.out::println);
 	}
 
 	@Transactional(readOnly = true)
