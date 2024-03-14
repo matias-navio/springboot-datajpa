@@ -79,9 +79,18 @@ public interface PersonRepository extends CrudRepository<Person, Long>{
     @Query("select p.id, upper(p.name), lower(p.lastname), upper(p.programmingLanguage) from Person p")
     List<Object[]> findPersonDataConcatMix();
 
-    List<Person> findByNameLike(String name);
+    @Query(value = "select * from persons where id between ?1 and ?2 order by name desc", nativeQuery = true)
+    List<Person> findAllBetweenId(Integer id1, Integer id2);
 
-    List<Person> findByIdBetween(Long id1, Long id2);
+    @Query(value = "select * from persons where name between ?1 and ?2 order by name asc", nativeQuery = true)
+    List<Person> findAllByNameBetween(String c1, String c2);
 
-    List<Person> findByNameBetween(String name1, String name2);
+    @Query(value = "select * from persons where name like ?1 order by id desc", nativeQuery = true)
+    List<Person> findAllByNameLikeDesc(String name1);
+
+    List<Person> findByNameLikeOrderByIdDesc(String name);
+
+    List<Person> findByIdBetweenOrderByNameAsc(Long id1, Long id2);
+
+    List<Person> findByNameBetweenOrderByNameDesc(String name1, String name2);
 }
