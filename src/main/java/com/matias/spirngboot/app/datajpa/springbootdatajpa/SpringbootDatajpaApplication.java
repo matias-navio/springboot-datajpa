@@ -38,22 +38,64 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 		// personaliceQueries2();
 		// pesonalizedQueriesDistinct();
 		// pesonalizedQueriesConcatUpperAndLowerCase();
-		personalizedQueriesBetween();
+		// personalizedQueriesBetween();
+		// queriesBetweenRepository();
+		personalizedOrderByQueriesAndRepository();
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedOrderByQueriesAndRepository(){
+
+		System.out.println("====== Consulta para ordenar los nombres desc con query ======");
+		List<Person> persons = repository.findAllOrderById();
+		persons.forEach(System.out::println);
+
+		System.out.println("====== Consulta para ordenar los nombres desc con método ======");
+		persons = repository.findAllByOrderByIdDesc();
+		persons.forEach(System.out::println);
+
+		System.out.println("====== Consulta para ordenar los nombres desc con query ======");
+		persons = repository.findAllOrderByName();
+		persons.forEach(System.out::println);
+
+		System.out.println("====== Consulta para ordenar los nombres desc con método ======");
+		persons = repository.findAllByOrderByNameDesc();
+		persons.forEach(System.out::println);
+
+	}	
+
+	@Transactional(readOnly = true)
+	public void queriesBetweenRepository(){
+
+		// estas son las mismas queries de personalizedQueriesBetween(), pero hechas con métodos de CrudRepository
+
+		System.out.println("========= Consulta las personas entre los ids con between =========");
+		List<Person> persons = repository.findByIdBetweenOrderByNameAsc(1L, 4L);
+		persons.forEach(System.out::println);
+		
+		System.out.println("========= Consulta las personas que empiezan con M con like =========");
+		persons = repository.findByNameLikeOrderByIdDesc("M%");
+		persons.forEach(System.out::println);
+
+		System.out.println("========= Consulta las personas con un rango entre letras del abecedario =========");
+		persons = repository.findByNameBetweenOrderByNameDesc("a", "j");
+		persons.forEach(System.out::println);
+
 	}
 
 	@Transactional(readOnly = true)
 	public void personalizedQueriesBetween(){
 
 		System.out.println("========= Consulta con rangos between =========");
-		List<Person> persons = repository.findByIdBetweenOrderByNameAsc(2L,5L);
+		List<Person> persons = repository.findAllBetweenId(2L,5L);
 		persons.forEach(System.out::println);
 	
 		System.out.println("========= Consulta con nombre por sos letras con like =========");
-		persons = repository.findByNameLikeOrderByIdDesc("M%");
+		persons = repository.findAllByNameLikeDesc("M%");
 		persons.forEach(System.out::println);
 
 		System.out.println("========= Consulta con nombre por sos letras con between =========");
-		persons = repository.findByNameBetweenOrderByNameDesc("a".toUpperCase(), "n".toUpperCase());
+		persons = repository.findAllByNameBetween("a".toUpperCase(), "n".toUpperCase());
 		persons.forEach(System.out::println);
 	}
 
