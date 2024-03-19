@@ -28,19 +28,62 @@ public class SpringbootDatajpaApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 
-		// list();
-		// findOde();
-		// create();
-		// update();
-		// delete();
-		// delete2();
-		// personaliceQueries();
-		// personaliceQueries2();
-		// pesonalizedQueriesDistinct();
-		// pesonalizedQueriesConcatUpperAndLowerCase();
-		// personalizedQueriesBetween();
-		// queriesBetweenRepository();
-		personalizedOrderByQueriesAndRepository();
+		subQueries();	
+	}
+
+	@Transactional(readOnly = true)
+	public void subQueries(){
+		System.out.println("====== Consulta el nombre mas corto de usuario y su longitud =======");
+		List<Object[]> registers = repository.getMinLengthName();
+		registers.forEach(p -> {
+			String name = (String) p[0];
+			Integer length = (Integer) p[1];
+			System.out.println("Nombre: " + name + ", Longitud: " + length);
+		});
+
+		System.out.println("====== Consulta el nombre mas largo de usuario y su longitud =======");
+		registers = repository.getMaxLengthName();
+		registers.forEach(p -> {
+			String name = (String) p[0];
+			Integer length = (Integer) p[1];
+			System.out.println("Nombre: " + name + ", Longitud: " + length);
+		});
+
+		System.out.println("====== Consulta el ultimo usuario de la lista ======");
+		Optional<Person> lastPerson = repository.getLastPerson();
+		lastPerson.ifPresent(System.out::println);
+	}
+
+	@Transactional(readOnly = true)
+	public void queriesFunctionAgregation(){
+
+		System.out.println("======= Consulta con la cantidad de usuarios ======");
+		Long persons = repository.getCountPerson();
+		System.out.println("Cantidad de usuarios: " + persons);
+
+		System.out.println("======= Consulta con el id mas chico ======");
+		persons = repository.getMinId();
+		System.out.println("Id mas chico: " + persons);
+
+		System.out.println("======= Consulta con el id mas alto ======");
+		persons = repository.getMaxId();
+		System.out.println("Id mas alto: " + persons);
+
+		System.out.println("====== Consulta, nombre del usuario y el largo de su nombre ======");
+		List<Object[]> namePersonLength = repository.getPersonNameLength();
+		namePersonLength.forEach(p -> {
+			String name = (String) p[0];
+			Integer lentgth = (Integer) p[1];
+			System.out.println("Name: " + name + ", Length: " + lentgth);
+		});
+
+		System.out.println("====== Consulta de funciones de agregacion ======");
+		Object[] resumeReg = (Object[]) repository.getResumeAggregationFunction();
+		System.out.println("Id menor: " + resumeReg[0] +
+							"\nId mayor: " + resumeReg[1] +
+							"\nSuma ids: " + resumeReg[2] +
+							"\nPromedio longitud names: " + resumeReg[3] + 
+							"\nUsuarios: " + resumeReg[4]);
 	}
 
 	@Transactional(readOnly = true)

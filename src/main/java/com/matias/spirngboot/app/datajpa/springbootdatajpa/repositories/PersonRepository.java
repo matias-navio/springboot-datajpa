@@ -97,6 +97,7 @@ public interface PersonRepository extends CrudRepository<Person, Long>{
 
 
     // queries order by
+    
     @Query("select p from Person p order by p.id desc")
     List<Person> findAllOrderById();
 
@@ -107,7 +108,31 @@ public interface PersonRepository extends CrudRepository<Person, Long>{
 
     List<Person> findAllByOrderByNameDesc();
 
-    // queries count, max, min
+    // funciones de agregacion (min, max, sum, avg)
 
+    @Query("select count(p) from Person p")
+    Long getCountPerson();
 
+    @Query("select min(p.id) from Person p")
+    Long getMinId();
+
+    @Query("select max(p.id) from Person p")
+    Long getMaxId();
+
+    @Query("select p.name, length(p.name) from Person p")
+    public List<Object[]> getPersonNameLength();
+
+    @Query("select min(p.id), max(p.id), sum(p.id), avg(length(p.name)), count(p) from Person p")
+    public Object getResumeAggregationFunction();
+
+    // subqueries
+
+    @Query("select p.name, length(p.name) from Person p where length(p.name)=(select min(length(p.name)) from Person p)")
+    public List<Object[]> getMinLengthName();
+
+    @Query("select p.name, length(p.name) from Person p where length(p.name) = (select max(length(p.name)) from Person p)")
+    public List<Object[]> getMaxLengthName();
+
+    @Query("select p from Person p where p.id = (select max(p.id) from Person p)")
+    public Optional<Person> getLastPerson();
 }
