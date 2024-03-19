@@ -1,6 +1,9 @@
 package com.matias.spirngboot.app.datajpa.springbootdatajpa.entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,11 +19,13 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(name = "last_name")
     private String lastname;
     // por convencion en las bases de datos se separa con guion bajo
     @Column(name = "programming_language")
     private String programmingLanguage;
+
+    @Embedded
+    private Audit audit = new Audit();
     
     public Person(Long id, String name, String lastname, String programmingLanguage) {
         this.id = id;
@@ -56,13 +61,8 @@ public class Person {
         this.programmingLanguage = programmingLanguage;
     }
 
-    @Override
     public String toString() {
         return "id=" + id + ", name=" + name + ", lastname=" + lastname + ", programmingLanguage="
                 + programmingLanguage + "]";
-    }
-
-    
-
-    
+    } 
 }
